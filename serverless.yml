@@ -17,7 +17,7 @@ provider:
 
 # environment:
 #   tableName: notes
-# ^^ Returns a 200 when commented out, maybe remove later.
+#   stripeSecretKey: ${env:STRIPE_SECERET_KEY}
 
 iamRoleStatements:
   - Effect: Allow
@@ -70,5 +70,13 @@ functions:
       - http:
         path: notes/{id}
         method: delete
+        cors: true
+        authorizer: aws_iam
+  billing:
+    handler: billing.main
+    events:
+      - http:
+        path: billing
+        method: post
         cors: true
         authorizer: aws_iam
