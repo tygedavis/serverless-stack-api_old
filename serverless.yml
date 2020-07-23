@@ -14,3 +14,53 @@ provider:
   runtime: nodejs12.x
   stage: prod
   region: us-east-1
+
+# environment:
+#   tableName: notes
+# ^^ Returns a 200 when commented out, maybe remove later.
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
+functions:
+  create:
+    handler: create.main
+    events:
+      - http:
+        path: notes
+        method: post
+        cors: true
+        authorizer: aws_iamv
+  get:
+    handler: get.main
+    events:
+      - http:
+        path: notes/{id}
+        method: get
+        cors: true
+        authorizer: aws_iam
+  list:
+    handler: list.main
+    events: 
+      - http:
+        path: notes
+        method: get
+        cors: true
+        authorizer: aws_iam
+  update:
+    handler: update.main
+    events:
+      - http:
+        path: notes/{id}
+        method: put
+        cors: true
+        authorizer: aws_iam
